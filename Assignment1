@@ -1,0 +1,28 @@
+
+CREATE OR REPLACE STAGE patient_stage
+URL='s3://my-s3-patient-data/patientdata/third.csv'
+
+
+
+CREATE or replace FILE FORMAT my_csv_format 
+TYPE = CSV 
+FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+skip_header = 1;
+
+
+COPY INTO patientrecords
+FROM @patient_stage
+FILE_FORMAT = (FORMAT_NAME = 'my_csv_format');
+
+
+--Assignment 1 task 2
+
+CREATE MATERIALIZED VIEW AvgStayByDiagnosis AS
+SELECT 
+    Diagnosis, 
+    AVG(DATEDIFF(DAY, AdmissionDate, DischargeDate)) AS AvgStay
+FROM patientrecords
+GROUP BY Diagnosis;
+
+
+SELECT * FROM AvgStayByDiagnosis;
