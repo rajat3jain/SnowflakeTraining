@@ -1,0 +1,36 @@
+
+---- assignment 2  task 1 
+
+create table Staging_PatientRecords as 
+select * from patientrecords
+
+CREATE OR REPLACE STREAM Staging_PatientRecords_Stream 
+ON TABLE Staging_PatientRecords 
+Create or replace table TRAININGDATABASE.payer.Final_PatientRecords ( DIAGNOSIS varchar, patientcount int )
+
+Create or replace task Dailyreport_assignment2 
+warehouse=  'compute_wh'
+schedule = '2 minute'
+as insert into Final_PatientRecords
+select diagnosis ,count(*) as patientcount
+from patientrecords
+group by DIAGNOSIS
+select * from patientrecords
+select * from staging_patientrecords;
+select * from final_patientrecords;
+
+
+
+---- assignment 2 task 2. 
+--- NOTE: using other table since patient records didn't have much data to verify the optimization 
+
+
+create or replace  table mytable as 
+select * from SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.CATALOG_SALESsnowflake_sample_data.tpcds_sf10tcl.catalog_page
+
+select* from mytable where cp_type = 'bi-annual';      -- results in 662 ms 
+
+alter table mytable cluster by   (cp_type);
+
+select* from mytable where cp_type = 'bi-annual';     --- results in 132 ms 
+
