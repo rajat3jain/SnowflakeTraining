@@ -1,0 +1,40 @@
+--------------TASK1     Starts ---------------------------------------------------
+
+-- Insert sample data into the table
+INSERT INTO PatientRecords (PatientID, Name, Age, Region, Diagnosis)
+VALUES
+    (1, 'John Doe', 30, 'East', 'Flu'),
+    (2, 'Jane Smith', 25, 'West', 'Cold'),
+    (3, 'Alice Johnson', 40, 'North', 'Fever'),
+    (4, 'Bob Brown', 35, 'East', 'Allergy'),
+    (5, 'Charlie White', 28, 'West', 'Covid-19');
+
+
+select * from patientrecords;
+--all 5  records are available in output 
+
+--- create Policy
+CREATE OR REPLACE ROW ACCESS POLICY region_policy
+  AS (region_column STRING) 
+  RETURNS BOOLEAN ->
+    region_column = CURRENT_REGION();
+
+--attach policy 
+
+ALTER TABLE PatientRecords ADD ROW ACCESS POLICY region_policy ON (Region);
+
+SELECT * FROM PatientRecords;
+SELECT CURRENT_REGION();
+
+insert into PatientRecords (PatientID, Name, Age, Region, Diagnosis)
+VALUES (6, 'Charlie White', 28, 'AWS_AP_SOUTHEAST_1', 'Covid-19');
+
+select * from patientrecords;
+
+-- only 1 result showing in output which matcches the current region. 
+
+------- Taks1 ends------------------------
+
+
+    
+
