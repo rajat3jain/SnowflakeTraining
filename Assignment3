@@ -36,5 +36,52 @@ select * from patientrecords;
 ------- Taks1 ends------------------------
 
 
+
+
+-----taks 2  starts
+
+
+
+-- Step 1.1: Create the production table
+CREATE OR REPLACE TABLE PatientRecords (
+    PatientID INT,
+    Name STRING,
+    Diagnosis STRING,
+    AdmissionDate DATE
+);
+
+-- Step 1.2: Insert sample data into the table
+INSERT INTO PatientRecords VALUES
+    (1, 'Alice', 'Flu', '2024-11-01'),
+    (2, 'Bob', 'Cold', '2024-11-02'),
+    (3, 'Charlie', 'Asthma', '2024-11-03');
+
+-- Step 1.3: Verify the data in the table
+SELECT * FROM PatientRecords;
+
+-- Step 2.1: Update the Diagnosis for PatientID = 1
+UPDATE PatientRecords
+SET Diagnosis = 'Pneumonia'
+WHERE PatientID = 1;
+
+-- Step 2.2: Verify the updated data
+SELECT * FROM PatientRecords;
+
+-- Clone the table at a previous state (60 seconds before)
+
+CREATE OR REPLACE TABLE PatientRecordsClone
+CLONE PatientRecords
+AT (OFFSET => -60);
+
+-- Verify the cloned data
+SELECT * FROM PatientRecordsClone;
+
+SHOW TABLES LIKE 'PatientRecords';
+SELECT * FROM PatientRecordsClone;
+-- Query the Original
+SELECT * FROM PatientRecords;
+
+---tssk2 ends-------------
+
     
 
